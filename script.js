@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Adblock Youtube
-// @namespace    Adblock Youtube
+// @namespace    http://tampermonkey.net/
 // @version      1.0
 // @description  Adblock Youtube
 // @author       siben.vn
