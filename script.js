@@ -76,7 +76,7 @@
         iframe.style.top = '0';
         iframe.style.left = '0';
         iframe.style.zIndex = '9999';
-        iframe.style.pointerEvents = 'all'; 
+        iframe.style.pointerEvents = 'all';
         const videoPlayerElement = document.querySelector('.html5-video-player');
         videoPlayerElement.appendChild(iframe);
     }
@@ -95,7 +95,7 @@
                 break;
             default:
                 console.info(`ℹ️ ${message}`, ...args);
-        }        
+        }
     }
     setInterval(() => {
         removeAds();
