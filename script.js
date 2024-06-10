@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Adblock Youtube
-// @namespace    http://tampermonkey.net/
+// @namespace    https://siben.vn/
 // @version      1.0
 // @description  Adblock Youtube
-// @author       siben.vn
+// @author       siben
 // @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @updateURL    https://github.com/sibenvn/adblock/raw/main/script.js
