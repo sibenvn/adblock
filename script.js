@@ -4,7 +4,7 @@
 // @version      1.0
 // @description  Adblock Youtube
 // @author       siben
-// @match        https://www.youtube.com/watch?v=*
+// @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @updateURL    https://github.com/sibenvn/adblock/raw/main/script.js
 // @downloadURL  https://github.com/sibenvn/adblock/raw/main/script.js
@@ -53,9 +53,14 @@
         });
     }
 
+    function createURLPlayer(videoId)
+    {
+        return 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1';
+    }
+
     function clearPlayer(ignoreVideoID) {
         const iframes = document.querySelectorAll('.html5-video-player iframe');
-        const url = 'https://www.youtube-nocookie.com/embed/' + ignoreVideoID + '?autoplay=1&modestbranding=1';
+        const url = createURLPlayer(ignoreVideoID);
         let i = 0;
         iframes.forEach(iframe => {
             if (iframe.src !== url || i > 1) {
@@ -75,7 +80,7 @@
     }
 
     function createIframe(videoID) {
-        const url = 'https://www.youtube-nocookie.com/embed/' + videoID + '?autoplay=1&modestbranding=1';
+        const url = createURLPlayer(videoID);
         const iframe = document.createElement('iframe');
         iframe.setAttribute('src', url);
         iframe.setAttribute('frameborder', '0');
@@ -119,7 +124,7 @@
 
     setInterval(() => {
         autoPaused();
-    }, 100);
+    }, 1);
     setInterval(() => {
         removeAds();
     }, 500);
