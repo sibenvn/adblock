@@ -4,7 +4,7 @@
 // @version      1.0
 // @description  Adblock Youtube
 // @author       siben
-// @match        https://www.youtube.com/*
+// @match        https://www.youtube.com/watch?v=*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @updateURL    https://github.com/sibenvn/adblock/raw/main/script.js
 // @downloadURL  https://github.com/sibenvn/adblock/raw/main/script.js
@@ -13,8 +13,11 @@
 
 (function() {
     let currentUrl = window.location.href;
-    let isVideoPlayerModified = false;
+
     function getVideoId() {
+        if (window.location.href !== currentUrl) {
+            currentUrl = window.location.href;
+        }
         let videoID = '';
         const baseURL = 'https://www.youtube.com/watch?v=';
         const startIndex = currentUrl.indexOf(baseURL);
@@ -28,38 +31,53 @@
         }
         return videoID;
     }
+
     function removeAds() {
-        let video = document.querySelector('video');
-        if (video && !video.paused) {
-            video.volume = 0;
-            video.pause();
-        }
-        if (window.location.href !== currentUrl) {
-            currentUrl = window.location.href;
-            isVideoPlayerModified = false;
-            const iframes = document.querySelectorAll('.html5-video-player iframe');
-            iframes.forEach(iframe => {
-                iframe.remove();
-            });
-        }
-        if (isVideoPlayerModified) {
-            return;
-        }
         let videoID = getVideoId();
         if (videoID == '') {
             log('YouTube video URL not found.', 'error');
             return;
         }
+        clearPlayer(videoID);
         log("Video ID: " + videoID);
         createPlayer(videoID);
-        isVideoPlayerModified = true;
     }
+
+    function autoPaused() {
+        let videos = document.querySelectorAll('video');
+        videos.forEach(video => {
+            if (!video.paused) {
+                video.volume = 0;
+                video.pause();
+            }
+        });
+    }
+
+    function clearPlayer(ignoreVideoID) {
+        const iframes = document.querySelectorAll('.html5-video-player iframe');
+        const url = 'https://www.youtube-nocookie.com/embed/' + ignoreVideoID + '?autoplay=1&modestbranding=1';
+        let i = 0;
+        iframes.forEach(iframe => {
+            if (iframe.src !== url || i > 1) {
+                iframe.remove();
+            }
+            if (iframe.src === url) {
+                i++;
+            }
+        });
+    }
+
     function createPlayer(videoID) {
-        const startOfUrl = "https://www.youtube-nocookie.com/embed/";
-        const endOfUrl = "?autoplay=1&modestbranding=1";
-        const finalUrl = startOfUrl + videoID + endOfUrl;
+        const iframes = document.querySelectorAll('.html5-video-player iframe');
+        if (iframes.length <= 0) {
+            createIframe(videoID);
+        }
+    }
+
+    function createIframe(videoID) {
+        const url = 'https://www.youtube-nocookie.com/embed/' + videoID + '?autoplay=1&modestbranding=1';
         const iframe = document.createElement('iframe');
-        iframe.setAttribute('src', finalUrl);
+        iframe.setAttribute('src', url);
         iframe.setAttribute('frameborder', '0');
         iframe.setAttribute(
             'allow',
@@ -80,6 +98,7 @@
         const videoPlayerElement = document.querySelector('.html5-video-player');
         videoPlayerElement.appendChild(iframe);
     }
+
     function log(log, level, ...args) {
         const prefix = '🔧 Remove Adblock Thing:';
         const message = `${prefix} ${log}`;
@@ -97,7 +116,11 @@
                 console.info(`ℹ️ ${message}`, ...args);
         }
     }
+
+    setInterval(() => {
+        autoPaused();
+    }, 100);
     setInterval(() => {
         removeAds();
-    }, 100);
+    }, 500);
 })();
