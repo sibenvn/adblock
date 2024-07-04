@@ -49,6 +49,10 @@
             clearPlayer();
             return;
         }
+        let ads = document.getElementById('player-ads');
+        if (ads) {
+            ads.remove();
+        }
         let videoID = getVideoId();
         if (videoID == '') {
             log('YouTube video URL not found.', 'error');
