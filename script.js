@@ -46,12 +46,12 @@
 
     function removeAds() {
         if (!isWatch()) {
+            clearPlayer();
             return;
         }
         let videoID = getVideoId();
         if (videoID == '') {
             log('YouTube video URL not found.', 'error');
-            clearPlayer();
             return;
         }
         clearPlayer(videoID);
@@ -147,6 +147,7 @@
                 console.info(`ℹ️ ${message}`, ...args);
         }
     }
+    hiddenPlayer();
     setInterval(() => {
         hiddenPlayer();
         autoPaused();
