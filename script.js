@@ -124,7 +124,7 @@
         iframe.style.position = 'absolute';
         iframe.style.top = '0';
         iframe.style.left = '0';
-        iframe.style.zIndex = '9999';
+        iframe.style.zIndex = '1';
         iframe.style.pointerEvents = 'all';
         const videoPlayerElement = document.querySelector('#player-container.ytd-watch-flexy');
         videoPlayerElement.appendChild(iframe);
