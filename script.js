@@ -36,6 +36,7 @@
         let videoID = getVideoId();
         if (videoID == '') {
             log('YouTube video URL not found.', 'error');
+            clearPlayer();
             return;
         }
         clearPlayer(videoID);
@@ -58,17 +59,23 @@
         return 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1';
     }
 
-    function clearPlayer(ignoreVideoID) {
+    function clearPlayer(ignoreVideoID = '') {
         const iframes = document.querySelectorAll('.html5-video-player iframe');
-        const url = createURLPlayer(ignoreVideoID);
-        let i = 0;
+        if (ignoreVideoID !== '') {
+            const url = createURLPlayer(ignoreVideoID);
+            let i = 0;
+            iframes.forEach(iframe => {
+                if (iframe.src !== url || i > 1) {
+                    iframe.remove();
+                }
+                if (iframe.src === url) {
+                    i++;
+                }
+            });
+            return;
+        }
         iframes.forEach(iframe => {
-            if (iframe.src !== url || i > 1) {
-                iframe.remove();
-            }
-            if (iframe.src === url) {
-                i++;
-            }
+            iframe.remove();
         });
     }
 
