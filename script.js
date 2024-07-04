@@ -14,6 +14,18 @@
 (function() {
     let currentUrl = window.location.href;
 
+    function isWatch() {
+        return window.location.href.startsWith('https://www.youtube.com/watch');
+    }
+
+    function hiddenPlayer()
+    {
+        let player = document.getElementById('ytd-player');
+        if (player) {
+            player.setAttribute('style', 'display: none');
+        }
+    }
+
     function getVideoId() {
         if (window.location.href !== currentUrl) {
             currentUrl = window.location.href;
@@ -33,6 +45,9 @@
     }
 
     function removeAds() {
+        if (!isWatch()) {
+            return;
+        }
         let videoID = getVideoId();
         if (videoID == '') {
             log('YouTube video URL not found.', 'error');
@@ -45,6 +60,9 @@
     }
 
     function autoPaused() {
+        if (!isWatch()) {
+            return;
+        }
         let videos = document.querySelectorAll('video');
         videos.forEach(video => {
             if (!video.paused) {
@@ -56,11 +74,12 @@
 
     function createURLPlayer(videoId)
     {
-        return 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1';
+        // https://www.youtube-nocookie.com/embed/
+        return 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&loop=1&playlist=' + videoId;
     }
 
     function clearPlayer(ignoreVideoID = '') {
-        const iframes = document.querySelectorAll('.html5-video-player iframe');
+        const iframes = document.querySelectorAll('#player-container.ytd-watch-flexy iframe');
         if (ignoreVideoID !== '') {
             const url = createURLPlayer(ignoreVideoID);
             let i = 0;
@@ -80,7 +99,7 @@
     }
 
     function createPlayer(videoID) {
-        const iframes = document.querySelectorAll('.html5-video-player iframe');
+        const iframes = document.querySelectorAll('#player-container.ytd-watch-flexy iframe');
         if (iframes.length <= 0) {
             createIframe(videoID);
         }
@@ -107,7 +126,7 @@
         iframe.style.left = '0';
         iframe.style.zIndex = '9999';
         iframe.style.pointerEvents = 'all';
-        const videoPlayerElement = document.querySelector('.html5-video-player');
+        const videoPlayerElement = document.querySelector('#player-container.ytd-watch-flexy');
         videoPlayerElement.appendChild(iframe);
     }
 
@@ -128,8 +147,8 @@
                 console.info(`ℹ️ ${message}`, ...args);
         }
     }
-
     setInterval(() => {
+        hiddenPlayer();
         autoPaused();
     }, 1);
     setInterval(() => {
