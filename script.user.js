@@ -3,11 +3,11 @@
 // @namespace    https://siben.vn/
 // @version      1.0
 // @description  Adblock Youtube
-// @author       siben
+// @author       siben.vn
 // @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
-// @updateURL    https://github.com/sibenvn/adblock/raw/main/script.js
-// @downloadURL  https://github.com/sibenvn/adblock/raw/main/script.js
+// @updateURL    https://github.com/sibenvn/adblock/raw/main/script.user.js
+// @downloadURL  https://github.com/sibenvn/adblock/raw/main/script.user.js
 // @grant        none
 // ==/UserScript==
 
@@ -24,6 +24,13 @@
         if (player) {
             player.setAttribute('style', 'display: none');
         }
+    }
+
+    function removeAll(query) {
+        const elements = document.querySelectorAll(query);
+        elements.forEach((element) => {
+            element.remove();
+        });
     }
 
     function getVideoId() {
@@ -49,10 +56,8 @@
             clearPlayer();
             return;
         }
-        let ads = document.getElementById('player-ads');
-        if (ads) {
-            ads.remove();
-        }
+        removeAll('#player-ads');
+        removeAll('#chat-container');
         let videoID = getVideoId();
         if (videoID == '') {
             log('YouTube video URL not found.', 'error');
