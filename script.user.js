@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Adblock Youtube
 // @namespace    https://siben.vn/
-// @version      1.0
+// @version      1.1
 // @description  Adblock Youtube
 // @author       siben.vn
 // @match        https://www.youtube.com/*
@@ -13,6 +13,11 @@
 
 (function() {
     let currentUrl = window.location.href;
+
+    const updateModal = {
+        enable: true, // if true, replaces default window popup with a custom modal
+        timer: 5000, // timer: number | false
+    };
 
     function isWatch() {
         return window.location.href.startsWith('https://www.youtube.com/watch');
@@ -139,6 +144,73 @@
         videoPlayerElement.appendChild(iframe);
     }
 
+    function checkForUpdate() {
+        if (!isWatch()) {
+            return;
+        }
+        const scriptUrl = 'https://raw.githubusercontent.com/sibenvn/adblock/main/script.user.js';
+        fetch(scriptUrl)
+        .then(response => response.text())
+        .then(data => {
+            const match = data.match(/@version\s+(\d+\.\d+)/);
+            if (!match) {
+                return;
+            }
+            const githubVersion = parseFloat(match[1]);
+            const currentVersion = parseFloat(GM_info.script.version);
+            if (githubVersion <= currentVersion) {
+                log('You have the latest version of the script. ' + githubVersion + " : " + currentVersion);
+                return;
+            }
+            if (updateModal.enable) {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+                document.head.appendChild(script);
+                const style = document.createElement('style');
+                style.textContent = '.swal2-container { z-index: 2400; }';
+                document.head.appendChild(style);
+                script.onload = function () {
+                    Swal.fire({
+                        position: "top-end",
+                        backdrop: false,
+                        title: 'Adblock: New version.',
+                        text: 'Do you want to update?',
+                        showCancelButton: true,
+                        showDenyButton: false,
+                        confirmButtonText: 'Update',
+                        cancelButtonText: 'Close',
+                        timer: updateModal.timer ?? 5000,
+                        timerProgressBar: true,
+                        didOpen: (modal) => {
+                            modal.onmouseenter = Swal.stopTimer;
+                            modal.onmouseleave = Swal.resumeTimer;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.replace(scriptUrl);
+                        } else if(result.isDenied) {
+                           // is denied
+                        }
+                    });
+                };
+                script.onerror = function () {
+                    var result = window.confirm("Adblock: A new version is available. Please update your script.");
+                    if (result) {
+                        window.location.replace(scriptUrl);
+                    }
+                }
+            } else {
+                var result = window.confirm("Adblock: A new version is available. Please update your script.");
+                if (result) {
+                    window.location.replace(scriptUrl);
+                }
+            }
+        })
+        .catch(error => {
+            log("Error checking for updates:", "e", error)
+        });
+    }
+
     function log(log, level, ...args) {
         const prefix = '🔧 Remove Adblock Thing:';
         const message = `${prefix} ${log}`;
@@ -156,6 +228,8 @@
                 console.info(`ℹ️ ${message}`, ...args);
         }
     }
+
+    checkForUpdate();
     hiddenPlayer();
     setInterval(() => {
         hiddenPlayer();
