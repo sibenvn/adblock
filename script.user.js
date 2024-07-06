@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Adblock Youtube
 // @namespace    https://siben.vn/
-// @version      1.2
+// @version      1.3
 // @description  Adblock Youtube
 // @author       siben.vn
 // @match        https://www.youtube.com/*
@@ -63,7 +63,7 @@
         }
         removeAll('#player-ads');
         removeAll('#chat-container');
-        removeAll('.style-scope.ytd-ad-slot-renderer');
+        removeAll('ytd-ad-slot-renderer');
         let videoID = getVideoId();
         if (videoID == '') {
             log('YouTube video URL not found.', 'error');
@@ -121,6 +121,10 @@
     }
 
     function createIframe(videoID) {
+        const videoPlayerElement = document.querySelector('#player-container.ytd-watch-flexy');
+        if (!videoPlayerElement) {
+            return;
+        }
         const url = createURLPlayer(videoID);
         const iframe = document.createElement('iframe');
         iframe.setAttribute('src', url);
@@ -141,7 +145,6 @@
         iframe.style.left = '0';
         iframe.style.zIndex = '1';
         iframe.style.pointerEvents = 'all';
-        const videoPlayerElement = document.querySelector('#player-container.ytd-watch-flexy');
         videoPlayerElement.appendChild(iframe);
     }
 
