@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Adblock Youtube
 // @namespace    https://siben.vn/
-// @version      1.1
+// @version      1.2
 // @description  Adblock Youtube
 // @author       siben.vn
 // @match        https://www.youtube.com/*
@@ -63,6 +63,7 @@
         }
         removeAll('#player-ads');
         removeAll('#chat-container');
+        removeAll('.style-scope.ytd-ad-slot-renderer');
         let videoID = getVideoId();
         if (videoID == '') {
             log('YouTube video URL not found.', 'error');
