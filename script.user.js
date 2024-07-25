@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Adblock Youtube
 // @namespace    https://siben.vn/
-// @version      1.3
+// @version      1.4
 // @description  Adblock Youtube
 // @author       siben.vn
 // @match        https://www.youtube.com/*
@@ -39,9 +39,6 @@
     }
 
     function getVideoId() {
-        if (window.location.href !== currentUrl) {
-            currentUrl = window.location.href;
-        }
         let videoID = '';
         const baseURL = 'https://www.youtube.com/watch?v=';
         const startIndex = currentUrl.indexOf(baseURL);
@@ -89,8 +86,7 @@
 
     function createURLPlayer(videoId)
     {
-        // https://www.youtube-nocookie.com/embed/
-        return 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&loop=1&playlist=' + videoId;
+        return 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1&loop=1&playlist=' + videoId;
     }
 
     function clearPlayer(ignoreVideoID = '') {
@@ -236,6 +232,10 @@
     checkForUpdate();
     hiddenPlayer();
     setInterval(() => {
+        if (window.location.href !== currentUrl) {
+            currentUrl = window.location.href;
+            window.location.reload();
+        }
         hiddenPlayer();
         autoPaused();
     }, 1);
