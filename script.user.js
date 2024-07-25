@@ -39,6 +39,9 @@
     }
 
     function getVideoId() {
+        if (window.location.href !== currentUrl) {
+            currentUrl = window.location.href;
+        }
         let videoID = '';
         const baseURL = 'https://www.youtube.com/watch?v=';
         const startIndex = currentUrl.indexOf(baseURL);
@@ -228,14 +231,9 @@
                 console.info(`ℹ️ ${message}`, ...args);
         }
     }
-
     checkForUpdate();
     hiddenPlayer();
     setInterval(() => {
-        if (window.location.href !== currentUrl) {
-            currentUrl = window.location.href;
-            window.location.reload();
-        }
         hiddenPlayer();
         autoPaused();
     }, 1);
