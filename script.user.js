@@ -89,7 +89,7 @@
 
     function createURLPlayer(videoId)
     {
-        return 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1&loop=1&playlist=' + videoId;
+        return 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1&loop=1';
     }
 
     function clearPlayer(ignoreVideoID = '') {
