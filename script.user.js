@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Adblock Youtube
 // @namespace    https://siben.vn/
-// @version      1.4
+// @version      1.5
 // @description  Adblock Youtube
 // @author       siben.vn
 // @match        https://www.youtube.com/*
@@ -89,7 +89,7 @@
 
     function createURLPlayer(videoId)
     {
-        return 'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1';
+        return 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
     }
 
     function clearPlayer(ignoreVideoID = '') {
